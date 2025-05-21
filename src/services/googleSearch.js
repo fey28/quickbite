@@ -1,7 +1,7 @@
 import { Loader } from '@googlemaps/js-api-loader';
 
 const loader = new Loader({
-  apiKey: 'AIzaSyCJrhVvnd-cPSwQGTVH9bRXXu8U826enKc', // 🔑 cheia de la Google Cloud Console
+  apiKey: 'AIzaSyCJrhVvnd-cPSwQGTVH9bRXXu8U826enKc',
   libraries: ['places'],
 });
 
