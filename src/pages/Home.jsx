@@ -83,12 +83,20 @@ function Home() {
       {/* Header */}
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-extrabold text-orange-600 tracking-tight">QuickBite</h1>
-        <button
-          onClick={() => navigate('/login')}
-          className="text-sm font-medium text-orange-600 hover:underline"
-        >
-          Autentificare
-        </button>
+        <div className="space-x-4">
+          <button
+            onClick={() => navigate('/login')}
+            className="text-sm font-medium text-orange-600 hover:underline"
+          >
+            Autentificare
+          </button>
+          <button
+            onClick={() => navigate('/register')}
+            className="text-sm font-medium text-orange-600 hover:underline"
+          >
+            Creare cont
+          </button>
+        </div>
       </header>
 
       {/* Căutare + Hartă */}
