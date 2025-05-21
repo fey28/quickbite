@@ -12,6 +12,7 @@
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.8",
     "@tailwindcss/vite": "^4.1.7",
+    "@zxing/browser": "^0.1.5",
     "firebase": "^11.8.0",
     "keen-slider": "^6.8.6",
     "leaflet": "^1.9.4",
