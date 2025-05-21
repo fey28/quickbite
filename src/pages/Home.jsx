@@ -1,21 +1,26 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
 import { useKeenSlider } from 'keen-slider/react';
+import 'keen-slider/keen-slider.min.css';
+import { auth } from '../firebase/firebaseconfig';
+import { useAuth } from '../context/AuthContext';
 import MapView from '../components/MapView';
 import QRScanner from '../components/QRScanner';
 import { searchPlace } from '../services/googleSearch';
-import 'keen-slider/keen-slider.min.css';
 
 function Home() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
   const [query, setQuery] = useState('');
   const [searchResult, setSearchResult] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
-  const navigate = useNavigate();
 
   const allRestaurants = [
     { id: 'la-bunica', name: 'La Bunica', type: 'Românesc', img: '/assets/bunica.jpg', position: [44.4268, 26.1025] },
-    { id: 'bella-italia', name: 'Bella Italia', type: 'Pizzerie', img: '/assets/bunica.jpg', position: [44.4372, 26.0979] },
-    { id: 'sushi-zen', name: 'Sushi Zen', type: 'Japonez', img: '/assets/bunica.jpg', position: [44.4295, 26.1158] },
+    { id: 'bella-italia', name: 'Bella Italia', type: 'Pizzerie', img: '/assets/italia.jpg', position: [44.4372, 26.0979] },
+    { id: 'sushi-zen', name: 'Sushi Zen', type: 'Japonez', img: '/assets/sushi.jpg', position: [44.4295, 26.1158] },
     { id: 'casa-di-david', name: 'Casa di David', type: 'Fine Dining', img: '/assets/casadidavid.jpg', position: [44.4601, 26.0826] },
   ];
 
@@ -40,7 +45,7 @@ function Home() {
       });
     } catch (err) {
       setSearchResult(null);
-      console.warn('Nu s-a găsit locația în Google:', err.message);
+      console.warn('Locație necunoscută:', err.message);
     }
   };
 
@@ -59,9 +64,18 @@ function Home() {
     slides: { perView: 3, spacing: 15 },
   });
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (err) {
+      alert('Eroare la delogare: ' + err.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-6 max-w-5xl mx-auto relative">
-      {/* Scanner activ */}
+      {/* Scanner QR */}
       {showScanner && (
         <QRScanner
           onResult={(link) => {
@@ -72,7 +86,7 @@ function Home() {
         />
       )}
 
-      {/* Buton de scanare QR */}
+      {/* Buton QR */}
       <button
         onClick={() => setShowScanner(true)}
         className="fixed bottom-6 right-6 z-40 bg-orange-500 text-white text-lg p-4 rounded-full shadow-lg hover:bg-orange-600"
@@ -83,20 +97,34 @@ function Home() {
       {/* Header */}
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-extrabold text-orange-600 tracking-tight">QuickBite</h1>
-        <div className="space-x-4">
-          <button
-            onClick={() => navigate('/login')}
-            className="text-sm font-medium text-orange-600 hover:underline"
-          >
-            Autentificare
-          </button>
-          <button
-            onClick={() => navigate('/register')}
-            className="text-sm font-medium text-orange-600 hover:underline"
-          >
-            Creare cont
-          </button>
-        </div>
+        {user ? (
+          <div className="flex flex-col items-end text-right">
+            <p className="text-sm text-gray-700">
+              Bine ai venit, <span className="font-semibold text-orange-700">{user.name}</span>
+            </p>
+            <button
+              onClick={handleLogout}
+              className="text-xs text-orange-500 hover:underline mt-1"
+            >
+              Deconectare
+            </button>
+          </div>
+        ) : (
+          <div className="space-x-4">
+            <button
+              onClick={() => navigate('/login')}
+              className="text-sm font-medium text-orange-600 hover:underline"
+            >
+              Autentificare
+            </button>
+            <button
+              onClick={() => navigate('/register')}
+              className="text-sm font-medium text-orange-600 hover:underline"
+            >
+              Creare cont
+            </button>
+          </div>
+        )}
       </header>
 
       {/* Căutare + Hartă */}

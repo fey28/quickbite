@@ -1,83 +1,94 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase/firebaseconfig';
 
 function Login() {
   const navigate = useNavigate();
-  const [role, setRole] = useState('client');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+  });
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // Simulare login (în viitor vom adăuga backend)
-    if (role === 'admin') {
-      navigate('/admin');
-    } else {
-      navigate('/restaurant/la-bunica'); // exemplu redirect client
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password);
+      const user = userCredential.user;
+
+      // 🔍 Obține datele din Firestore
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+
+      if (!userDoc.exists()) {
+        alert('Contul nu are date asociate.');
+        return;
+      }
+
+      const userData = userDoc.data();
+
+      // 🔁 Redirecționează în funcție de rol
+      if (userData.role === 'admin') {
+        navigate('/dashboard');
+      } else {
+        navigate('/');
+      }
+
+    } catch (err) {
+      alert('Eroare la autentificare: ' + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-orange-100 to-orange-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-3xl shadow-xl p-10 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-orange-500 text-center mb-6">Autentificare QuickBite</h1>
-
-        {/* Selectare tip utilizator */}
-        <div className="flex justify-center gap-4 mb-6">
-          <button
-            onClick={() => setRole('client')}
-            className={`px-4 py-2 rounded-full border transition ${
-              role === 'client'
-                ? 'bg-orange-500 text-white'
-                : 'bg-white text-orange-500 border-orange-300'
-            }`}
-          >
-            Client
-          </button>
-          <button
-            onClick={() => setRole('admin')}
-            className={`px-4 py-2 rounded-full border transition ${
-              role === 'admin'
-                ? 'bg-orange-500 text-white'
-                : 'bg-white text-orange-500 border-orange-300'
-            }`}
-          >
-            Deținător Restaurant
-          </button>
-        </div>
-
-        {/* Formular */}
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="text-sm text-gray-600">Email</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm text-gray-600">Parolă</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400"
-            />
-          </div>
-
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center text-orange-600 mb-6">Autentificare</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 p-3 rounded-lg"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Parolă"
+            value={form.password}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 p-3 rounded-lg"
+          />
           <button
             type="submit"
-            className="w-full bg-orange-500 text-white py-3 rounded-xl hover:bg-orange-600 transition"
+            disabled={loading}
+            className="w-full bg-orange-500 text-white font-semibold py-2 rounded-lg hover:bg-orange-600 transition"
           >
-            Autentificare
+            {loading ? 'Se conectează...' : 'Autentificare'}
           </button>
         </form>
+
+        <p className="mt-4 text-sm text-center text-gray-500">
+          Nu ai cont?{' '}
+          <span
+            onClick={() => navigate('/register')}
+            className="text-orange-600 font-medium hover:underline cursor-pointer"
+          >
+            Creează cont
+          </span>
+        </p>
       </div>
     </div>
   );
