@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useKeenSlider } from 'keen-slider/react';
 import MapView from '../components/MapView';
+import QRScanner from '../components/QRScanner';
 import { searchPlace } from '../services/googleSearch';
 import 'keen-slider/keen-slider.min.css';
 
 function Home() {
   const [query, setQuery] = useState('');
   const [searchResult, setSearchResult] = useState(null);
+  const [showScanner, setShowScanner] = useState(false);
   const navigate = useNavigate();
 
   const allRestaurants = [
@@ -58,7 +60,26 @@ function Home() {
   });
 
   return (
-    <div className="min-h-screen max-h-1 bg-gray-50 px-4 py-6 max-w-5xl mx-auto">
+    <div className="min-h-screen bg-gray-50 px-4 py-6 max-w-5xl mx-auto relative">
+      {/* Scanner activ */}
+      {showScanner && (
+        <QRScanner
+          onResult={(link) => {
+            setShowScanner(false);
+            navigate(link);
+          }}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
+
+      {/* Buton de scanare QR */}
+      <button
+        onClick={() => setShowScanner(true)}
+        className="fixed bottom-6 right-6 z-40 bg-orange-500 text-white text-lg p-4 rounded-full shadow-lg hover:bg-orange-600"
+      >
+        📷
+      </button>
+
       {/* Header */}
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-extrabold text-orange-600 tracking-tight">QuickBite</h1>
