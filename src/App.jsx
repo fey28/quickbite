@@ -8,6 +8,7 @@ import Confirmation from './pages/Confirmation';
 import Login from './pages/Login';
 import Dashboard from './pages/Admin/Dashboard';
 import RestaurantMock from './pages/RestaurantMock';
+import OrderPage from './pages/OrderPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/admin" element={<Dashboard />} />
         <Route path="/restaurant/:id" element={<RestaurantMock />} />
         <Route path="*" element={<Home />} />
+        <Route path="/order/:restaurantId" element={<OrderPage />} />
       </Routes>
     </BrowserRouter>
   );
