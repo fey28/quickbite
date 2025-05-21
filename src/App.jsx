@@ -7,6 +7,7 @@ import Checkout from './pages/Checkout';
 import Confirmation from './pages/Confirmation';
 import Login from './pages/Login';
 import Dashboard from './pages/Admin/Dashboard';
+import RestaurantMock from './pages/RestaurantMock';
 
 function App() {
   return (
@@ -19,11 +20,11 @@ function App() {
         <Route path="/confirmation" element={<Confirmation />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<Dashboard />} />
+        <Route path="/restaurant/:id" element={<RestaurantMock />} />
+        <Route path="*" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );
 }
-<Route path="*" element={<Home />} />
 
 export default App;
-
