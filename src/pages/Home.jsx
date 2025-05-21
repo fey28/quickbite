@@ -14,8 +14,8 @@ function Home() {
 
   const allRestaurants = [
     { id: 'la-bunica', name: 'La Bunica', type: 'Românesc', img: '/assets/bunica.jpg', position: [44.4268, 26.1025] },
-    { id: 'bella-italia', name: 'Bella Italia', type: 'Pizzerie', img: '/assets/italia.jpg', position: [44.4372, 26.0979] },
-    { id: 'sushi-zen', name: 'Sushi Zen', type: 'Japonez', img: '/assets/sushi.jpg', position: [44.4295, 26.1158] },
+    { id: 'bella-italia', name: 'Bella Italia', type: 'Pizzerie', img: '/assets/bunica.jpg', position: [44.4372, 26.0979] },
+    { id: 'sushi-zen', name: 'Sushi Zen', type: 'Japonez', img: '/assets/bunica.jpg', position: [44.4295, 26.1158] },
     { id: 'casa-di-david', name: 'Casa di David', type: 'Fine Dining', img: '/assets/casadidavid.jpg', position: [44.4601, 26.0826] },
   ];
 
@@ -107,7 +107,7 @@ function Home() {
       <section className="bg-gradient-to-r from-orange-50 to-orange-100 py-10 px-6 rounded-xl shadow-inner mb-12">
         <h2 className="text-2xl font-bold text-orange-600 mb-4">Restaurante Partenere</h2>
         <p className="text-gray-700 max-w-3xl mb-6">
-          Colaborăm cu restaurante locale și de top pentru a-ți oferi o experiență culinară rapidă și rafinată. 
+          Colaborăm cu restaurante locale și de top pentru a-ți oferi o experiență culinară rapidă și rafinată.
           Fie că preferi bucătăria tradițională, italiană sau fine dining, avem parteneri pentru toate gusturile.
         </p>
 
@@ -117,7 +117,7 @@ function Home() {
               <img
                 src={r.img}
                 alt={r.name}
-                className="h-32 w-32 object-cover rounded-full shadow-md border-4 border-white"
+                className="w-32 aspect-square object-cover rounded-full shadow-md border-4 border-white"
               />
             </div>
           ))}
@@ -128,8 +128,8 @@ function Home() {
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Revoluționează modul în care comanzi în restaurant</h2>
         <p className="text-gray-600 max-w-2xl leading-relaxed">
-          QuickBite îți permite să comanzi rapid, direct de pe telefon, fără a mai aștepta un ospătar. 
-          Scanezi un cod QR aflat pe masă, accesezi meniul digital al restaurantului și plasezi comanda în câteva secunde. 
+          QuickBite îți permite să comanzi rapid, direct de pe telefon, fără a mai aștepta un ospătar.
+          Scanezi un cod QR aflat pe masă, accesezi meniul digital al restaurantului și plasezi comanda în câteva secunde.
           Totul este simplu, intuitiv și eficient – pentru ca tu să te bucuri de experiența culinară, nu de timpul de așteptare.
         </p>
       </section>
