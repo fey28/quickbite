@@ -1,61 +1,89 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import ProductCard from '../components/ProductCard';
 import CategoryTabs from '../components/CategoryTabs';
 
-const mockProducts = [
-  {
-    name: 'Pizza Margherita',
-    weight: '450g',
-    price: 28,
-    description: 'Clasică, cu mozzarella și busuioc',
-    image: '/assets/pizza.jpg',
-    category: 'Pizza',
-  },
-  {
-    name: 'Pizza Quattro Formaggi',
-    weight: '480g',
-    price: 34,
-    description: '4 tipuri de brânză',
-    image: '/assets/pizza4.jpg',
-    category: 'Pizza',
-  },
-  {
-    name: 'Ciorbă de burtă',
-    weight: '400ml',
-    price: 22,
-    description: 'Tradițională, cu smântână',
-    image: '/assets/ciorba.jpg',
-    category: 'Supe',
-  },
-  {
-    name: 'Supă cremă de dovleac',
-    weight: '300ml',
-    price: 20,
-    description: 'Cremă fină, dulce-picantă',
-    image: '/assets/supa.jpg',
-    category: 'Supe',
-  },
-];
+const menuPerRestaurant = {
+  'la-bunica': [
+    {
+      name: 'Ciorbă de burtă',
+      weight: '400ml',
+      price: 22,
+      description: 'Tradițională, cu smântână',
+      image: '/assets/ciorba.jpg',
+      category: 'Supe',
+    },
+    {
+      name: 'Sarmale cu mămăliguță',
+      weight: '500g',
+      price: 35,
+      description: 'Cu smântână și ardei iute',
+      image: '/assets/sarmale.jpg',
+      category: 'Fel principal',
+    },
+  ],
+  'bella-italia': [
+    {
+      name: 'Pizza Margherita',
+      weight: '450g',
+      price: 28,
+      description: 'Clasică, cu mozzarella și busuioc',
+      image: '/assets/pizza.jpg',
+      category: 'Pizza',
+    },
+    {
+      name: 'Paste Carbonara',
+      weight: '400g',
+      price: 30,
+      description: 'Paste cu pancetta și parmezan',
+      image: '/assets/paste.jpg',
+      category: 'Paste',
+    },
+  ],
+};
 
 function OrderPage() {
   const { restaurantId } = useParams();
-  const [selectedCategory, setSelectedCategory] = useState('Pizza');
+  const navigate = useNavigate();
+  const products = menuPerRestaurant[restaurantId] || [];
+  const categories = [...new Set(products.map((p) => p.category))];
+  const [selectedCategory, setSelectedCategory] = useState(categories[0] || '');
   const [cart, setCart] = useState([]);
 
-  const categories = [...new Set(mockProducts.map((p) => p.category))];
-  const filteredProducts = mockProducts.filter((p) => p.category === selectedCategory);
+  const filteredProducts = products.filter((p) => p.category === selectedCategory);
 
   const addToCart = (product) => {
-    setCart([...cart, product]);
+    setCart((prev) => [...prev, product]);
   };
 
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
+  if (!products.length) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-gray-700 px-4">
+        <h1 className="text-2xl font-bold mb-2">Restaurant inexistent sau fără meniu.</h1>
+        <button
+          onClick={() => navigate('/')}
+          className="mt-4 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
+        >
+          ← Înapoi la homepage
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white text-gray-800 px-4 py-6 max-w-6xl mx-auto font-sans">
+      {/* Buton Înapoi */}
+      <button
+        onClick={() => navigate('/')}
+        className="mb-6 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
+      >
+        ← Înapoi la homepage
+      </button>
+
       {/* Header */}
-      <header className="mb-8">
+      <header className="mb-6">
         <h2 className="text-3xl font-bold text-orange-600">Comandă la {restaurantId}</h2>
         <p className="text-gray-500">Selectează preparatele dorite și plasează comanda direct din aplicație.</p>
       </header>
@@ -70,9 +98,9 @@ function OrderPage() {
         ))}
       </div>
 
-      {/* Coș comenzi */}
+      {/* Coș */}
       {cart.length > 0 && (
-        <div className="mt-10 bg-orange-50 p-6 rounded-xl shadow-md">
+        <div className="mt-12 bg-orange-50 p-6 rounded-xl shadow-md">
           <h3 className="text-xl font-semibold mb-4 text-orange-600">Coșul tău</h3>
           <ul className="space-y-2">
             {cart.map((item, i) => (
