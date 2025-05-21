@@ -58,7 +58,7 @@ function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6 max-w-5xl mx-auto">
+    <div className="min-h-screen max-h-1 bg-gray-50 px-4 py-6 max-w-5xl mx-auto">
       {/* Header */}
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-extrabold text-orange-600 tracking-tight">QuickBite</h1>
@@ -70,14 +70,16 @@ function Home() {
         </button>
       </header>
 
-      {/* Introducere */}
+      {/* Căutare + Hartă */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Revoluționează modul în care comanzi în restaurant</h2>
-        <p className="text-gray-600 max-w-2xl leading-relaxed">
-          QuickBite îți permite să comanzi rapid, direct de pe telefon, fără a mai aștepta un ospătar. 
-          Scanezi un cod QR aflat pe masă, accesezi meniul digital al restaurantului și plasezi comanda în câteva secunde. 
-          Totul este simplu, intuitiv și eficient – pentru ca tu să te bucuri de experiența culinară, nu de timpul de așteptare.
-        </p>
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Caută un restaurant sau o locație..."
+          className="w-full p-3 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 mb-4"
+        />
+        <MapView restaurants={restaurantsToDisplay} />
       </section>
 
       {/* Restaurante Partenere */}
@@ -101,16 +103,14 @@ function Home() {
         </div>
       </section>
 
-      {/* Căutare + Hartă */}
+      {/* Introducere */}
       <section className="mb-12">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Caută un restaurant sau o locație..."
-          className="w-full p-3 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 mb-4"
-        />
-        <MapView restaurants={restaurantsToDisplay} />
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Revoluționează modul în care comanzi în restaurant</h2>
+        <p className="text-gray-600 max-w-2xl leading-relaxed">
+          QuickBite îți permite să comanzi rapid, direct de pe telefon, fără a mai aștepta un ospătar. 
+          Scanezi un cod QR aflat pe masă, accesezi meniul digital al restaurantului și plasezi comanda în câteva secunde. 
+          Totul este simplu, intuitiv și eficient – pentru ca tu să te bucuri de experiența culinară, nu de timpul de așteptare.
+        </p>
       </section>
     </div>
   );

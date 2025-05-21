@@ -22,6 +22,8 @@ function GoogleMapView({ restaurants = [] }) {
         mapInstance.current = new google.maps.Map(mapRef.current, {
           center: { lat: 44.43, lng: 26.10 },
           zoom: 13,
+           disableDefaultUI: true,
+           zoomControl:     true,
         });
       }
 
@@ -55,7 +57,7 @@ function GoogleMapView({ restaurants = [] }) {
     });
   }, [restaurants]);
 
-  return <div ref={mapRef} className="h-96 w-full rounded-xl shadow mb-6" />;
+  return <div ref={mapRef} className="h-128 w-full rounded-xl shadow mb-6" />;
 }
 
 export default GoogleMapView;
