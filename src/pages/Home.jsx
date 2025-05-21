@@ -60,7 +60,7 @@ function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6 max-w-5xl mx-auto relative">
+    <div className="min-h-screen max-h-1 bg-gray-50 px-4 py-6 max-w-5xl mx-auto relative">
       {/* Scanner activ */}
       {showScanner && (
         <QRScanner
@@ -75,10 +75,21 @@ function Home() {
       {/* Buton de scanare QR */}
       <button
         onClick={() => setShowScanner(true)}
-        className="fixed bottom-6 right-6 z-40 bg-orange-500 text-white text-lg p-4 rounded-full shadow-lg hover:bg-orange-600"
+        className="
+    fixed bottom-6 right-6 z-40
+    w-16 h-16
+    flex items-center justify-center
+    bg-orange-500 rounded-full shadow-lg
+    hover:bg-orange-600
+  "
       >
-        📷
+        <img
+          src="/assets/qrcode.png"
+          alt="Scan QR"
+          className="w-15 h-15"
+        />
       </button>
+
 
       {/* Header */}
       <header className="flex justify-between items-center mb-8">
