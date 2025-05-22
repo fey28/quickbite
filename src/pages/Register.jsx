@@ -1,12 +1,23 @@
-// src/pages/Register.jsx
-import { useState } from 'react';
+/**
+ * src/pages/Register.jsx
+ *
+ * Updated Register page without <body> wrapper and using BackToHomeButton.
+ * Ensure your firebaseconfig.js initializes Firestore with long polling to fix gRPC errors:
+ * 
+ * import { initializeApp } from 'firebase/app';
+ * import { initializeFirestore } from 'firebase/firestore';
+ * const app = initializeApp(firebaseConfig);
+ * export const db = initializeFirestore(app, { experimentalForceLongPolling: true });
+ */
+
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebaseconfig';
-import { ArrowLeft } from 'lucide-react';
+import BackToHomeButton from '../components/BackToHomeButton';
 
-function Register() {
+export default function Register() {
   const navigate = useNavigate();
   const [role, setRole] = useState('user');
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -21,46 +32,37 @@ function Register() {
     setLoading(true);
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
+      const { user } = await createUserWithEmailAndPassword(
         auth,
         form.email,
         form.password
       );
 
       const safeData = {
-        uid: userCredential.user.uid,
+        uid: user.uid,
         name: form.name,
         email: form.email,
         role,
         createdAt: serverTimestamp(),
       };
 
-      await setDoc(doc(db, 'users', userCredential.user.uid), safeData);
-
-      
+      await setDoc(doc(db, 'users', user.uid), safeData);
       await signOut(auth);
       navigate('/login');
-    } catch (err) {
-      alert('Eroare la creare cont: ' + err.message);
+    } catch (error) {
+      alert('Eroare la creare cont: ' + error.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <body className="overflow-hidden">{
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <button
-      type="button"
-      onClick={() => navigate('/', { replace: true })}
-      className="fixed z-50 top-4 left-4 border border-orange-500 bg-white text-orange-500 hover:bg-orange-500 hover:text-white transition-colors duration-50 ease-linear px-4 py-2 rounded-md cursor-pointer text-base font-bold flex items-center"
-      aria-label="Go to home page"
-    >
-      <ArrowLeft className="mr-2 w-6 h-6" />
-      Home
-    </button>
+      <BackToHomeButton />
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-orange-600 mb-6">Creează un cont</h2>
+        <h2 className="text-2xl font-bold text-center text-orange-600 mb-6">
+          Creează un cont
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -133,9 +135,5 @@ function Register() {
         </p>
       </div>
     </div>
-}
-</body>
   );
 }
-
-export default Register;
