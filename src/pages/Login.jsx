@@ -1,17 +1,14 @@
-import { useState } from 'react';
+// src/pages/Login.jsx
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebaseconfig';
+import BackToHomeButton from '../components/BackToHomeButton';
 
-import { ArrowLeft } from 'lucide-react';
-
-function Login() {
+export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    email: '',
-    password: '',
-  });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -23,10 +20,14 @@ function Login() {
     setLoading(true);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        form.email,
+        form.password
+      );
       const user = userCredential.user;
 
-      // 🔍 Obține datele din Firestore
+      // Fetch user data from Firestore
       const userDoc = await getDoc(doc(db, 'users', user.uid));
 
       if (!userDoc.exists()) {
@@ -36,13 +37,12 @@ function Login() {
 
       const userData = userDoc.data();
 
-      // 🔁 Redirecționează în funcție de rol
+      // Redirect based on role
       if (userData.role === 'admin') {
         navigate('/dashboard');
       } else {
         navigate('/');
       }
-
     } catch (err) {
       alert('Eroare la autentificare: ' + err.message);
     } finally {
@@ -51,19 +51,12 @@ function Login() {
   };
 
   return (
-    <body className="overflow-hidden">{
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      <BackToHomeButton />
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-orange-600 mb-6">Autentificare</h2>
-      <button
-      type="button"
-      onClick={() => navigate('/', { replace: true })}
-      className="fixed z-50 top-4 left-4 border border-orange-500 bg-white text-orange-500 hover:bg-orange-500 hover:text-white transition-colors duration-50 ease-linear px-4 py-2 rounded-md cursor-pointer text-base font-bold flex items-center"
-      aria-label="Go to home page"
-    >
-      <ArrowLeft className="mr-2 w-6 h-6" />
-      Home
-    </button>
+        <h2 className="text-2xl font-bold text-center text-orange-600 mb-6">
+          Autentificare
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"
@@ -91,7 +84,6 @@ function Login() {
             {loading ? 'Se conectează...' : 'Autentificare'}
           </button>
         </form>
-
         <p className="mt-4 text-sm text-center text-gray-500">
           Nu ai cont?{' '}
           <span
@@ -102,9 +94,6 @@ function Login() {
           </span>
         </p>
       </div>
-    </div>}
-    </body>
+    </div>
   );
 }
-
-export default Login;
