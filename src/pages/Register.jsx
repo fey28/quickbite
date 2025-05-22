@@ -48,6 +48,7 @@ function Register() {
   };
 
   return (
+    <body className="overflow-hidden">{
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <button
       type="button"
@@ -132,6 +133,8 @@ function Register() {
         </p>
       </div>
     </div>
+}
+</body>
   );
 }
 

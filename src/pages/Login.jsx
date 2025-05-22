@@ -51,7 +51,7 @@ function Login() {
   };
 
   return (
-    
+    <body className="overflow-hidden">{
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-orange-600 mb-6">Autentificare</h2>
@@ -102,7 +102,8 @@ function Login() {
           </span>
         </p>
       </div>
-    </div>
+    </div>}
+    </body>
   );
 }
 
