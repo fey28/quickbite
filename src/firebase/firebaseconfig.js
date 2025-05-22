@@ -1,4 +1,3 @@
-// src/firebase/firebaseConfig.js
 import { initializeApp } from 'firebase/app';
 import {
   initializeFirestore,
@@ -9,13 +8,13 @@ import { getStorage } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB6mkHtdKTQdgnvu_CdR_NlpgNBkX-teUs",
-  authDomain: "quickbite-d6f77.firebaseapp.com",
-  projectId: "quickbite-d6f77",
-  storageBucket: "quickbite-d6f77.appspot.com",
-  messagingSenderId: "298143433690",
-  appId: "1:298143433690:web:8bd85c9ecdf326d40c36e3",
-  measurementId: "G-QVCWK5G7PX"
+    apiKey: "AIzaSyBxU3aFH4vWCy1WD_BBG4Y4bB6GCPbcOZQ",
+  authDomain: "quickbite-56340.firebaseapp.com",
+  projectId: "quickbite-56340",
+  storageBucket: "quickbite-56340.firebasestorage.app",
+  messagingSenderId: "262160280043",
+  appId: "1:262160280043:web:b86ec3339334f3bce2d1ae",
+  measurementId: "G-R8LSHD0TE6"
 };
 
 const app = initializeApp(firebaseConfig);

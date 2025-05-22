@@ -1,7 +1,6 @@
-// src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebaseconfig';
 
 const AuthContext = createContext();
@@ -12,38 +11,34 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user || !user.uid) {
+      if (!user) {
         setUserData(null);
         setLoading(false);
         return;
       }
 
       try {
-        // ✅ întârziere pentru a evita conflict între Write și Listen
-        await new Promise((res) => setTimeout(res, 1000));
+        // ⏳ opțional: întârziere pentru a evita conflict între write și read
+        await new Promise((res) => setTimeout(res, 500));
 
         const ref = doc(db, 'users', user.uid);
         const snap = await getDoc(ref);
 
-        let data;
-
-        if (!snap.exists()) {
-          data = {
+        if (snap.exists()) {
+          setUserData(snap.data());
+        } else {
+          // fallback dacă nu există documentul în Firestore
+          console.warn('⚠️ Documentul utilizator nu există în Firestore');
+          setUserData({
             uid: user.uid,
             email: user.email,
             name: user.displayName || 'Utilizator',
             role: 'user',
             verified: false,
-            createdAt: serverTimestamp(),
-          };
-          await setDoc(ref, data);
-        } else {
-          data = snap.data();
+          });
         }
-
-        setUserData(data);
       } catch (err) {
-        console.warn('⚠️ Firestore error:', err);
+        console.warn('⚠️ Eroare la citire Firestore:', err);
       } finally {
         setLoading(false);
       }
@@ -58,7 +53,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user: userData, loading, logout }}>
+    <AuthContext.Provider value={{ user: userData, role: userData?.role, loading, logout }}>
       {!loading && children}
     </AuthContext.Provider>
   );
