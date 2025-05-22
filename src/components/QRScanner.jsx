@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ function QRScanner({ onResult, onClose }) {
         const reader = new BrowserMultiFormatReader();
         codeReader.current = reader;
 
-        await reader.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
+        await reader.decodeFromVideoDevice(null, videoRef.current, (result) => {
           if (result) {
             handleResult(result.getText());
           }
@@ -24,17 +24,12 @@ function QRScanner({ onResult, onClose }) {
     };
 
     initScanner();
-
-    return () => {
-      stopCamera();
-    };
+    return () => stopCamera();
   }, []);
 
   const stopCamera = () => {
     try {
-      if (codeReader.current && typeof codeReader.current.reset === 'function') {
-        codeReader.current.reset();
-      }
+      codeReader.current?.reset();
       if (videoRef.current?.srcObject) {
         videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
         videoRef.current.srcObject = null;
@@ -47,14 +42,20 @@ function QRScanner({ onResult, onClose }) {
   const handleResult = (text) => {
     stopCamera();
 
-    // ✅ Verificăm dacă este un link absolut sau relativ
-    if (text.startsWith('http://') || text.startsWith('https://')) {
-      window.location.href = text; // deschide link complet
-    } else {
-      navigate(text); // navigare internă (ex: /order/la-bunica)
+    const baseUrl = 'https://quickbite-d6f77.web.app';
+
+    // Only allow URLs from our domain
+    if (!text.startsWith(baseUrl)) {
+      console.warn('Scanned URL is not allowed:', text);
+      return;
     }
 
-    onResult?.(text); // opțional dacă vrei să salvezi undeva codul
+    // Extract path after the domain
+    const path = text.substring(baseUrl.length) || '/';
+
+    // Navigate within the app
+    navigate(path);
+    onResult?.(path);
   };
 
   const handleClose = () => {
