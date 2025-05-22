@@ -4,6 +4,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebaseconfig';
 
+import { ArrowLeft } from 'lucide-react';
+
 function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -49,9 +51,19 @@ function Login() {
   };
 
   return (
+    
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-orange-600 mb-6">Autentificare</h2>
+      <button
+      type="button"
+      onClick={() => navigate('/', { replace: true })}
+      className="fixed z-50 top-4 left-4 border border-orange-500 bg-white text-orange-500 hover:bg-orange-500 hover:text-white transition-colors duration-50 ease-linear px-4 py-2 rounded-md cursor-pointer text-base font-bold flex items-center"
+      aria-label="Go to home page"
+    >
+      <ArrowLeft className="mr-2 w-6 h-6" />
+      Home
+    </button>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"

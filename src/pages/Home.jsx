@@ -62,11 +62,16 @@ function Home() {
   });
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-gray-50 px-4 py-6 max-w-5xl mx-auto relative">
       {/* QR Scanner */}
+=======
+    <div className="min-h-screen max-h-1 bg-gray-50 px-4 py-6 max-w-5xl mx-auto relative">
+      {/* Scanner QR */}
+>>>>>>> ad5546a9bcc927006a4d4b895c56f9c1aad9a314
       {showScanner && (
         <QRScanner
-          onResult={(link) => {
+          onResult={(link) => {s
             setShowScanner(false);
             navigate(link);
           }}

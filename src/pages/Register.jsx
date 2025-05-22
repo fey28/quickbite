@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebaseconfig';
+import { ArrowLeft } from 'lucide-react';
 
 function Register() {
   const navigate = useNavigate();
@@ -48,6 +49,15 @@ function Register() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <button
+      type="button"
+      onClick={() => navigate('/', { replace: true })}
+      className="fixed z-50 top-4 left-4 border border-orange-500 bg-white text-orange-500 hover:bg-orange-500 hover:text-white transition-colors duration-50 ease-linear px-4 py-2 rounded-md cursor-pointer text-base font-bold flex items-center"
+      aria-label="Go to home page"
+    >
+      <ArrowLeft className="mr-2 w-6 h-6" />
+      Home
+    </button>
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-orange-600 mb-6">Creează un cont</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
