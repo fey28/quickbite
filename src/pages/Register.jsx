@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-
+import { createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebaseconfig';
 import BackToHomeButton from '../components/BackToHomeButton';
@@ -23,50 +22,27 @@ export default function Register() {
     setLoading(true);
 
     try {
-      console.log('1. Creez utilizatorul...');
       const { user } = await createUserWithEmailAndPassword(
         auth,
         form.email,
         form.password
       );
-      console.log('2. Utilizator creat:', user.uid);
-
-      // Așteaptă puțin pentru a preveni erori Firestore (Write conflict)
-      await new Promise((res) => setTimeout(res, 150));
 
       const safeData = {
         uid: user.uid,
-        name: form.name.trim() || 'Utilizator',
+        name: form.name,
         email: form.email,
         role,
         createdAt: serverTimestamp(),
       };
 
-      console.log('3. Salvez în Firestore...');
       await setDoc(doc(db, 'users', user.uid), safeData);
       await signOut(auth);
 
       // Redirect to home after successful registration
       navigate('/', { replace: true });
     } catch (error) {
-      console.error('Eroare detaliată:', error);
-
-      let errorMessage = 'Eroare la creare cont: ';
-      switch (error.code) {
-        case 'auth/email-already-in-use':
-          errorMessage += 'Email-ul este deja folosit.';
-          break;
-        case 'auth/invalid-email':
-          errorMessage += 'Email invalid.';
-          break;
-        case 'auth/weak-password':
-          errorMessage += 'Parola trebuie să aibă minim 6 caractere.';
-          break;
-        default:
-          errorMessage += error.message;
-      }
-
-      alert(errorMessage);
+      alert('Eroare la creare cont: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -108,7 +84,6 @@ export default function Register() {
             className="w-full border border-gray-300 p-3 rounded-lg"
           />
 
-          {/* Selectare rol */}
           <div className="flex justify-between items-center text-sm text-gray-700 mt-4">
             <label className="flex items-center gap-2">
               <input
@@ -154,3 +129,4 @@ export default function Register() {
     </div>
   );
 }
+s
