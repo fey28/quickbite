@@ -1,14 +1,4 @@
-/**
- * src/pages/Register.jsx
- *
- * Updated Register page without <body> wrapper and using BackToHomeButton.
- * Ensure your firebaseconfig.js initializes Firestore with long polling to fix gRPC errors:
- * 
- * import { initializeApp } from 'firebase/app';
- * import { initializeFirestore } from 'firebase/firestore';
- * const app = initializeApp(firebaseConfig);
- * export const db = initializeFirestore(app, { experimentalForceLongPolling: true });
- */
+// src/pages/Register.jsx
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -48,7 +38,9 @@ export default function Register() {
 
       await setDoc(doc(db, 'users', user.uid), safeData);
       await signOut(auth);
-      navigate('/login');
+
+      // Redirect to home after successful registration
+      navigate('/', { replace: true });
     } catch (error) {
       alert('Eroare la creare cont: ' + error.message);
     } finally {
@@ -127,7 +119,7 @@ export default function Register() {
         <p className="mt-4 text-sm text-center text-gray-500">
           Ai deja un cont?{' '}
           <span
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/login')}
             className="text-orange-600 font-medium hover:underline cursor-pointer"
           >
             Autentificare
