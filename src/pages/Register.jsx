@@ -127,7 +127,7 @@ export default function Register() {
         <p className="mt-4 text-sm text-center text-gray-500">
           Ai deja un cont?{' '}
           <span
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/')}
             className="text-orange-600 font-medium hover:underline cursor-pointer"
           >
             Autentificare
