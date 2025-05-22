@@ -1,3 +1,4 @@
+// src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -11,13 +12,16 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
+      if (!user || !user.uid) {
         setUserData(null);
         setLoading(false);
         return;
       }
 
       try {
+        // ✅ întârziere pentru a evita conflict între Write și Listen
+        await new Promise((res) => setTimeout(res, 1000));
+
         const ref = doc(db, 'users', user.uid);
         const snap = await getDoc(ref);
 
@@ -39,7 +43,7 @@ export const AuthProvider = ({ children }) => {
 
         setUserData(data);
       } catch (err) {
-        console.warn('Eroare Firestore:', err);
+        console.warn('⚠️ Firestore error:', err);
       } finally {
         setLoading(false);
       }
@@ -54,8 +58,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user: userData, role: userData?.role, loading, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user: userData, loading, logout }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
