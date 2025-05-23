@@ -16,8 +16,8 @@ function Home() {
 
   const allRestaurants = [
     { id: 'la-bunica', name: 'La Bunica', type: 'Românesc', img: '/assets/bunica.jpg', position: [44.4268, 26.1025] },
-    { id: 'bella-italia', name: 'Bella Italia', type: 'Pizzerie', img: '/assets/bunica.jpg', position: [44.4372, 26.0979] },
-    { id: 'sushi-zen', name: 'Sushi Zen', type: 'Japonez', img: '/assets/bunica.jpg', position: [44.4295, 26.1158] },
+    { id: 'bella-italia', name: 'Bella Italia', type: 'Pizzerie', img: '/assets/bella-italia.png', position: [44.4372, 26.0979] },
+    { id: 'sushi-zen', name: 'Sushi Zen', type: 'Japonez', img: '/assets/sushi-zen.png', position: [44.4295, 26.1158] },
     { id: 'casa-di-david', name: 'Casa di David', type: 'Fine Dining', img: '/assets/casadidavid.jpg', position: [44.4601, 26.0826] },
   ];
 
@@ -26,10 +26,7 @@ function Home() {
     : allRestaurants;
 
   const handleLiveSearch = async () => {
-    if (!query.trim()) {
-      setSearchResult(null);
-      return;
-    }
+    if (!query.trim()) return setSearchResult(null);
 
     try {
       const result = await searchPlace(query);
@@ -40,9 +37,8 @@ function Home() {
         img: '',
         position: result.position,
       });
-    } catch (err) {
+    } catch {
       setSearchResult(null);
-      console.warn('Nu s-a găsit locația în Google:', err.message);
     }
   };
 
@@ -56,17 +52,13 @@ function Home() {
     restaurantsToDisplay.push(searchResult);
   }
 
-  const [sliderRef] = useKeenSlider({
-    loop: true,
-    slides: { perView: 3, spacing: 15 },
-  });
+  const [sliderRef] = useKeenSlider({ loop: true, slides: { perView: 3, spacing: 15 } });
 
   return (
-    <div className="min-h-screen max-h-1 bg-gray-50 px-4 py-6 max-w-5xl mx-auto relative">
-      {/* Scanner QR */}
+    <div className="min-h-screen bg-gray-50 px-4 py-6 max-w-5xl mx-auto relative">
       {showScanner && (
         <QRScanner
-          onResult={(link) => {s
+          onResult={(link) => {
             setShowScanner(false);
             navigate(link);
           }}
@@ -77,53 +69,63 @@ function Home() {
       {/* Buton QR */}
       <button
         onClick={() => setShowScanner(true)}
-        className="
-    fixed bottom-6 right-6 z-40
-    w-16 h-16
-    flex items-center justify-center
-    bg-orange-500 rounded-full shadow-lg
-    hover:bg-orange-600
-  "
+        className="fixed bottom-6 right-6 z-40 w-16 h-16 flex items-center justify-center bg-orange-500 rounded-full shadow-lg hover:bg-orange-600"
       >
-        <img
-          src="/assets/qrcode.png"
-          alt="Scan QR"
-          className="w-15 h-15"
-        />
+        <img src="/assets/qrcode.png" alt="Scan QR" className="w-10 h-10" />
       </button>
+
+      {/* Buton Panou Admin */}
+      {user?.role === 'admin' && (
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="fixed bottom-24 right-6 z-40 bg-orange-700 text-white px-4 py-3 rounded-lg shadow-lg hover:bg-orange-800"
+        >
+          Panou Administrator
+        </button>
+      )}
 
       {/* Header */}
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-extrabold text-orange-600 tracking-tight">QuickBite</h1>
-        {user ? (
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-800">👋 Bun venit, {user.name}</span>
-            <button
-              onClick={logout}
-              className="text-sm font-medium text-orange-600 hover:underline"
-            >
-              Deconectare
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/login')}
-              className="text-sm font-medium text-orange-600 hover:underline"
-            >
-              Autentificare
-            </button>
-            <button
-              onClick={() => navigate('/register')}
-              className="text-sm font-medium text-orange-600 hover:underline"
-            >
-              Creare cont
-            </button>
-          </div>
-        )}
+        <div className="flex items-center gap-4">
+          {user ? (
+            <>
+              <span className="text-sm text-gray-800">👋 Bun venit, {user.name}</span>
+              {user.role === 'admin' && (
+                <button
+                  onClick={() => navigate('/admin-orders')}
+                  className="text-sm font-medium text-orange-600 hover:underline"
+                >
+                  Panou Comenzi
+                </button>
+              )}
+              <button
+                onClick={logout}
+                className="text-sm font-medium text-orange-600 hover:underline"
+              >
+                Deconectare
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => navigate('/login')}
+                className="text-sm font-medium text-orange-600 hover:underline"
+              >
+                Autentificare
+              </button>
+              <button
+                onClick={() => navigate('/register')}
+                className="text-sm font-medium text-orange-600 hover:underline"
+              >
+                Creare cont
+              </button>
+            </>
+          )}
+        </div>
       </header>
 
-      {/* Search */}
+      {/* Search + Map */}
       <section className="mb-12">
         <input
           type="text"
@@ -140,29 +142,23 @@ function Home() {
         <h2 className="text-2xl font-bold text-orange-600 mb-4">Restaurante Partenere</h2>
         <p className="text-gray-700 max-w-3xl mb-6">
           Colaborăm cu restaurante locale și de top pentru a-ți oferi o experiență culinară rapidă și rafinată.
-          Fie că preferi bucătăria tradițională, italiană sau fine dining, avem parteneri pentru toate gusturile.
         </p>
 
         <div ref={sliderRef} className="keen-slider">
           {allRestaurants.map((r, i) => (
             <div key={i} className="keen-slider__slide flex justify-center items-center">
-              <img
-                src={r.img}
-                alt={r.name}
-                className="w-32 aspect-square object-cover rounded-full shadow-md border-4 border-white"
-              />
+              <img src={r.img} alt={r.name} className="w-32 aspect-square object-cover rounded-full shadow-md border-4 border-white" />
             </div>
           ))}
         </div>
       </section>
 
-      {/* Introducere */}
+      {/* Descriere */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Revoluționează modul în care comanzi în restaurant</h2>
         <p className="text-gray-600 max-w-2xl leading-relaxed">
           QuickBite îți permite să comanzi rapid, direct de pe telefon, fără a mai aștepta un ospătar.
-          Scanezi un cod QR aflat pe masă, accesezi meniul digital al restaurantului și plasezi comanda în câteva secunde.
-          Totul este simplu, intuitiv și eficient – pentru ca tu să te bucuri de experiența culinară, nu de timpul de așteptare.
+          Scanezi un cod QR aflat pe masă, accesezi meniul digital al restaurantului și plasezi comanda.
         </p>
       </section>
     </div>

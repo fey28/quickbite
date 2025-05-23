@@ -12,7 +12,7 @@ export const mockRestaurants = [
         price: 25,
         category: 'Pizza',
         weight: '500g',
-        imagePath: '/images/restaurants/la-pizzerie/m1.jpg'
+        imagePath: '/images/restaurants/la-pizzerie/m1.png'
       },
       {
         id: 'm2',
@@ -21,7 +21,7 @@ export const mockRestaurants = [
         price: 30,
         category: 'Pizza',
         weight: '550g',
-        imagePath: '/images/restaurants/la-pizzerie/m2.jpg'
+        imagePath: '/images/restaurants/la-pizzerie/m2.png'
       },
       {
         id: 'm3',
@@ -30,7 +30,7 @@ export const mockRestaurants = [
         price: 35,
         category: 'Pizza',
         weight: '550g',
-        imagePath: '/images/restaurants/la-pizzerie/m3.jpg'
+        imagePath: '/images/restaurants/la-pizzerie/m3.png'
       },
       {
         id: 'm4',
@@ -39,7 +39,7 @@ export const mockRestaurants = [
         price: 28,
         category: 'Paste',
         weight: '400g',
-        imagePath: '/images/restaurants/la-pizzerie/m4.jpg'
+        imagePath: '/images/restaurants/la-pizzerie/m4.png'
       },
       {
         id: 'm5',
@@ -48,7 +48,7 @@ export const mockRestaurants = [
         price: 18,
         category: 'Desert',
         weight: '200g',
-        imagePath: '/images/restaurants/la-pizzerie/m5.jpg'
+        imagePath: '/images/restaurants/la-pizzerie/m5.png'
       },
     ],
   },

@@ -10,16 +10,16 @@ function QRScanner({ onResult, onClose }) {
   useEffect(() => {
     const initScanner = async () => {
       try {
-        const reader = new BrowserMultiFormatReader();
-        codeReader.current = reader;
+        codeReader.current = new BrowserMultiFormatReader();
 
-        await reader.decodeFromVideoDevice(null, videoRef.current, (result) => {
-          if (result) {
-            handleResult(result.getText());
-          }
+        // 🔒 iOS fix: delay înainte de activarea camerei
+        await new Promise(res => setTimeout(res, 300));
+
+        await codeReader.current.decodeFromVideoDevice(null, videoRef.current, (result) => {
+          if (result) handleResult(result.getText());
         });
-      } catch (error) {
-        console.error('Eroare la inițializarea camerei:', error);
+      } catch (err) {
+        console.error('❌ Eroare la inițializarea camerei:', err);
       }
     };
 
@@ -30,37 +30,31 @@ function QRScanner({ onResult, onClose }) {
   const stopCamera = () => {
     try {
       codeReader.current?.reset();
-      if (videoRef.current?.srcObject) {
-        videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-        videoRef.current.srcObject = null;
-      }
+      const tracks = videoRef.current?.srcObject?.getTracks() || [];
+      tracks.forEach(track => track.stop());
+      if (videoRef.current) videoRef.current.srcObject = null;
     } catch (e) {
-      console.warn('Stop camera error:', e);
+      console.warn('⚠️ Eroare la oprirea camerei:', e);
     }
   };
 
   const handleResult = (text) => {
     stopCamera();
 
-    const baseUrl = 'https://quickbite-d6f77.web.app';
-
-    // Only allow URLs from our domain
+    const baseUrl = 'https://quickbite-56340.web.app';
     if (!text.startsWith(baseUrl)) {
-      console.warn('Scanned URL is not allowed:', text);
+      console.warn('🔐 Cod QR invalid:', text);
       return;
     }
 
-    // Extract path after the domain
     const path = text.substring(baseUrl.length) || '/';
-
-    // Navigate within the app
     navigate(path);
     onResult?.(path);
   };
 
   const handleClose = () => {
     stopCamera();
-    onClose();
+    onClose?.();
   };
 
   return (
@@ -71,8 +65,8 @@ function QRScanner({ onResult, onClose }) {
       <video
         ref={videoRef}
         autoPlay
-        muted
         playsInline
+        muted
         className="absolute inset-0 w-full h-full object-cover"
       />
       <div className="relative w-80 h-80 border-4 border-white rounded-xl z-10 pointer-events-none">

@@ -39,7 +39,7 @@ export default function Login() {
 
       // Redirect based on role
       if (userData.role === 'admin') {
-        navigate('/dashboard');
+        navigate('/');
       } else {
         navigate('/');
       }

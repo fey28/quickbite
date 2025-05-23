@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from '@tailwindcss/vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
   plugins: [
     react(),
-    tailwindcss(),
+    tailwindcss(), // 🟠 Tailwind intact
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
@@ -55,6 +56,14 @@ export default defineConfig({
           },
         ],
       },
+    }),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'public/firebase-messaging-sw.js',
+          dest: '.', // copiază în /dist
+        },
+      ],
     }),
   ],
 });

@@ -12,6 +12,8 @@ import OrderPage from './pages/OrderPage';
 import Register from './pages/Register';
 import AdminVerification from './pages/AdminVerification';
 import AdminDashboard from './pages/AdminDashboard';
+import Orders from './pages/Admin/Orders';
+
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/admin-verification" element={<AdminVerification />} />
         <Route path="/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin-orders" element={<Orders />} />
       </Routes>
     </BrowserRouter>
   );
